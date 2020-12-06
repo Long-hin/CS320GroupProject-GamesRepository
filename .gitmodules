@@ -1,0 +1,3 @@
+[submodule "rgs-ui"]
+	path = rgs-ui
+	url = https://github.com/knotgud/rgs-ui
