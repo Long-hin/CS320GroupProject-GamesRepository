@@ -24,7 +24,13 @@ class CollectionDatabase{
 
   // Just search for name? or all fields?
   search(query){
+    var i, filter, table, tr, td, txtV;
+    filter = query.value.toUpperCase();
+    table = document.getElementById(this.dataDictionary);
+    tr = table.getElementsByTagName("Title")
+for (i = 0; i < this.dataDictionary.length; i++){
 
+}
   }
 
   // Give a name? or give an ID? Maybe a button on the items page will auto search for users.
