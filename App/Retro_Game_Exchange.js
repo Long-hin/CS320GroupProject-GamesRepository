@@ -27,9 +27,18 @@ class CollectionDatabase{
     var i, filter, table, tr, td, txtV;
     filter = query.value.toUpperCase();
     table = document.getElementById(this.dataDictionary);
-    tr = table.getElementsByTagName("Title")
+    tr = table.getElementsByTagName("tr")
 for (i = 0; i < this.dataDictionary.length; i++){
-
+  td = tr[i].getElementsByTagName("td")[0];
+  if(td){
+    txtV = td.textContent || td.innerText;
+    if(txtV.toUpperCase().indexOf((filter) > -1)){
+      tr[i].style.display=""
+    }
+    else{
+      tr[i].style.display = "none";
+    }
+  }
 }
   }
 
