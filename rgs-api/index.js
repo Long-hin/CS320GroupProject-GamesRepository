@@ -3,6 +3,8 @@ const app = express()
 const port = 5000
 
 var data = require('./Retro_Game_Catalog.json')
+var collectionData = require('./collections.json')
+var userData = require('./users.json')
 
 function createError(status, message) {
 	var err = new Error(message);
@@ -33,6 +35,10 @@ app.get('/games', (req, res) => {
 })
 app.get('/hello/:index', (req, res, next) => {
 	res.send(data[req.blahble])
+})
+
+app.get('/user', (req, res) => {
+	res.send(userData)
 })
 
 app.listen(port, () => {

@@ -1,0 +1,18 @@
+[
+ {
+   "USER":"Hank",
+   "HASCOLLECTION":"true"
+ },
+ {
+   "USER":"Dean",
+   "HASCOLLECTION":"true"
+ },
+ {
+   "USER":"Yuuko",
+   "HASCOLLECTION":"true"
+ },
+ {
+   "USER":"Charlie",
+   "HASCOLLECTION":"false"
+ }
+]
