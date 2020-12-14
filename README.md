@@ -8,4 +8,5 @@ John McEchron
 Brandon Huang
 Daniel Lee
 
-As of Now this project is in the Design phase, as we think out and design more aspects and the planned implamentation of the project.
+This Project is now in the Implamentation phase, and is using Vue to create it's front end.
+This project is an implamentation of a games database using the API protocalls of Vue
