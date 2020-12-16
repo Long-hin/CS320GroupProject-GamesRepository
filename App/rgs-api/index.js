@@ -195,11 +195,11 @@ app.get('/game/:index', (req, res, next) => {
 app.get('/user/:userid/collection', (req, res, next)  => {
   // check if user exists
   if(!req.userExists){
-    res.send("404:User not found");
+    res.status(404).send("404:User not found");
     return;
   }
   // send the formatted object.
-  res.json(req.userCollection);
+  res.status(200).json(req.userCollection);
 })
 
 // Sends the entire collection data in the format specified below
@@ -248,27 +248,27 @@ app.get('/catalog', (req, res, next) => {
 // Sends a users information from the database.
 app.get('/user/:userid', (req, res, next) => {
   if(!req.userExists){
-    res.send("404:User not found");
+    res.status(404).send("404:User not found");
     return;
   }
-  res.send(req.userInfo);
+  res.status(200).json(req.userInfo);
 })
 
 // Get all the requests associated with a user ID (returns a list of objects)
 app.get('/user/:userid/request',(req, res, next) => {
   // TODO: add check if user exists
-  res.send(req.requests)
+  res.status(200).json(req.requests)
 })
 
 // Get an object representation of just the request with the requested ID
 app.get('/user/:userid/request/:reqid',(req, res, next) => {
   // if the request doesn't exist, send an error and return.
   if(!req.exists){
-    res.send("404:Not found");
+    res.status(404).send("404:Not found");
     console.log("404:Not found");
     return;
   }
-  res.send(req.request);
+  res.status(200).json(req.request);
 })
 
 
@@ -289,7 +289,7 @@ app.put('/user/:userid/collection/:gameid', (req, res, next) => {
   // Time to check if item is already in the collection
   for(let entry of req.collection){
     if(entry == req.gameID){
-      res.send("409:Item already in collection");
+      res.status(409).send("409:Item already in collection");
       console.log("409:Item already in collection");
       return;
     }
@@ -303,15 +303,15 @@ app.put('/user/:userid/collection/:gameid', (req, res, next) => {
     console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("success");
+  res.status(201).send("success");
 })
 
-// Find out how the status update will be sent. Maybe delete the request upon return or denial?
+// Find out how the status update will be sent.
 // possible statuses: pending, approved, returned, denied.
 app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
   // If the request doesn't exist, send an error and return.
   if(!req.exists){
-    res.send("404:Not found");
+    res.status(404).send("404:Not found");
     console.log("404:Not found");
     return;
   }
@@ -325,8 +325,6 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
     requestsData[req.index].STATUS = req.newStatus;
   }
 
-
-
   // Write to the file.
   fs.writeFile('./requests.json', JSON.stringify(requestsData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
@@ -334,14 +332,14 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
     console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("success");
+  res.status(200).send("success");
 })
 
 // Update user's information in database
 app.put('/user/:userid', (req, res, next) => {
   // Check if user exists
   if(!req.userExists){
-    res.send("404:User not found");
+    res.status(404).send("404:User not found");
     return;
   }
   // Get information from request
@@ -374,7 +372,7 @@ app.put('/user/:userid', (req, res, next) => {
     if (err) return console.log(err);
     console.log("success");
   })
-  res.send("success");
+  res.status(200).send("success");
 })
 // ************************* END OF GETS *************************
 
@@ -428,7 +426,7 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   }
   // If the game wasn't found, send an error and return.
   if(!foundFlag){
-    res.send("404:Not found");
+    res.status(404).send("404:Not found");
     console.log("404:Not found");
     return;
   }
@@ -440,7 +438,7 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
     }
     // Check if the request for the item already exists while were here
     if(entry.ITEM == req.gameID && entry.LENDER == req.lenderid && entry.BORROWER == req.borrowerid){
-      res.send("409:Already have request for that item");
+      res.status(409).send("409:Already have request for that item");
       console.log("409:Already have request for that item");
       return;
     }
@@ -463,7 +461,7 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
     console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("success");
+  res.status(200).send("success");
 })
 
 app.post('/user', (req,res,next) => {
