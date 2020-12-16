@@ -134,10 +134,6 @@ app.get('/user/:userid/collection', (req, res, next)  => {
   res.send(req.collection);
 })
 
-app.get('/catalog', (req, res, next) => {
-  res.send(collectionData);
-})
-
 // Sends the entire collection data basically raw
 app.get('/catalog', (req, res, next) => {
   res.send(collectionData);
