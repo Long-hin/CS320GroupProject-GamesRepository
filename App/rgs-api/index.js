@@ -425,7 +425,7 @@ app.put('/user/:userid', (req, res, next) => {
     return;
   }
   if (newData.lastName.length > 30){
-    res.status(400).send("First name length exceeded 30 characters");
+    res.status(400).send("Last name length exceeded 30 characters");
     return;
   }
   if (newData.email.length > 30){
@@ -437,7 +437,7 @@ app.put('/user/:userid', (req, res, next) => {
     return;
   }
   if (newData.city.length > 30){
-    res.status(400).send("Address length exceeded 30 characters");
+    res.status(400).send("City length exceeded 30 characters");
     return;
   }
   if (newData.zipcode.length > 15){
