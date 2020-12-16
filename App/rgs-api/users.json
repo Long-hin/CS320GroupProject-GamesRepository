@@ -24,8 +24,8 @@
     "country": "US"
   },
   {
-    "userID": "Hank@test.com",
-    "email": "Hank@test.com",
+    "userID": "Joe@test.com",
+    "email": "Joe@test.com",
     "password": "true",
     "firstName": "Joe",
     "lastName": "Smith",

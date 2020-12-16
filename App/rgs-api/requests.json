@@ -1,70 +1,63 @@
 [
   {
-    "LENDER": "Hank",
-    "BORROWER": "Joe",
-    "ITEM": "10005",
-    "ID": "1",
-    "STATUS": "approved"
-  },
-  {
-    "LENDER": "Hank",
-    "BORROWER": "Joe",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Joe@test.com",
     "ITEM": "10007",
     "ID": "2",
     "STATUS": "pending"
   },
   {
-    "LENDER": "Joe",
-    "BORROWER": "Hank",
+    "LENDER": "Joe@test.com",
+    "BORROWER": "Hank@test.com",
     "ITEM": "20005",
     "ID": "3",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Bob",
-    "BORROWER": "Joe",
+    "LENDER": "Bob@test.com",
+    "BORROWER": "Joe@test.com",
     "ITEM": "30005",
     "ID": "4",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Hank",
-    "BORROWER": "Bob",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
     "ITEM": "10105",
     "ID": "5",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Bob",
-    "BORROWER": "Joe",
+    "LENDER": "Bob@test.com",
+    "BORROWER": "Joe@test.com",
     "ITEM": "20008",
     "ID": "6",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Hank",
-    "BORROWER": "Joe",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Joe@test.com",
     "ITEM": "70005",
     "ID": "7",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Hank",
-    "BORROWER": "Bob",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
     "ITEM": "40005",
     "ID": "8",
     "STATUS": "accepted"
   },
   {
-    "LENDER": "Hank",
-    "BORROWER": "Bob",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
     "ITEM": "60005",
     "ID": "9",
     "STATUS": "pending"
   },
   {
-    "LENDER": "Hank",
-    "BORROWER": "Bob",
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
     "ITEM": "10015",
     "ID": 10,
     "STATUS": "pending"
