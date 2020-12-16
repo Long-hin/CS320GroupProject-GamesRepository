@@ -417,31 +417,34 @@ app.put('/user/:userid', (req, res, next) => {
     res.status(404).send("404:User not found");
     return;
   }
+  // Get information from request
+  let newData = req.body;
   // Check if the new fields are too long
-  if (newEntry.firstName.length > 30){
+  if (newData.firstName.length > 30){
     res.status(400).send("First name length exceeded 30 characters");
     return;
   }
-  if (newEntry.lastName.length > 30){
+  if (newData.lastName.length > 30){
     res.status(400).send("First name length exceeded 30 characters");
     return;
   }
-  if (newEntry.email.length > 30){
+  if (newData.email.length > 30){
     res.status(400).send("Email length exceeded 30 characters");
     return;
   }
-  if (newEntry.address.length > 100){
+  if (newData.address.length > 100){
     res.status(400).send("Address length exceeded 100 characters");
     return;
   }
-  if (newEntry.city.length > 30){
+  if (newData.city.length > 30){
     res.status(400).send("Address length exceeded 30 characters");
+    return;
   }
-  if (newEntry.zipcode.length > 15){
-    res.status(400).send("Zipcode length exceeded 15 characters")
+  if (newData.zipcode.length > 15){
+    res.status(400).send("Zipcode length exceeded 15 characters");
+    return;
   }
-  // Get information from request
-  let newData = req.body;
+
   // if the fields are empty skip updating the entry
   if (newData.firstName != ""){
     userData[req.userIndex].firstName = newData.firstName;
@@ -480,7 +483,7 @@ app.put('/user/:userid', (req, res, next) => {
     }
   })
 })
-// ************************* END OF GETS *************************
+// ************************* END OF PUTS *************************
 
 // ************************* START OF DELETES *************************
 
