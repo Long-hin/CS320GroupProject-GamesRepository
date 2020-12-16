@@ -198,7 +198,8 @@ app.get('/user/:userid/collection', (req, res, next)  => {
     res.send("404:User not found");
     return;
   }
-  res.send(req.collection);
+  // send the formatted object.
+  res.json(req.userCollection);
 })
 
 // Sends the entire collection data in the format specified below
