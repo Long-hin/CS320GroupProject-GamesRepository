@@ -142,6 +142,13 @@ app.param('userid', function(req, res, next, id){
 // Parameters for when gameid is called. gameID is the id of the related game.
 app.param('gameid', function (req, res, next, id) {
   req.gameID = id;
+  // Now add a field for the game name
+    for (let game of gameDatabase){
+      if(game.INDEX == id){
+        req.gameName = game.TITLE;
+        break;
+      }
+    }
   next();
 })
 
@@ -341,17 +348,26 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
       }
     }
     // Remove Other requests for the same item from the same user
+    let toRemove = [];
     let index = 0;
-    for(let entry of requestsData){
-      if (index == req.index){
-        // Don't delete that dummy
-        console.log("");
+    console.log(gameID);
+    console.log(lender);
+    // Find the indexes of requests for the same item from the same lender
+    for (let entry of requestsData) {
+      if (entry.ITEM == gameID && entry.LENDER == lender) {
+        if (index == req.index) {
+          console.log("skip");
+        }
+        else {
+          toRemove.push(index);
+          console.log("found");
+        }
       }
-      else if(entry.LENDER == lender && entry.ITEM == gameID){
-        requestsData.splice(index,1);
-        index--;
-      }
+      index ++;
     }
+    console.log("done");
+    console.log(toRemove);
+    // Now delete at those indexes.
     requestsData[req.index].STATUS = req.newStatus;
   }
   else if (req.newStatus == "returned"){
@@ -477,10 +493,10 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
 // Make new request
 app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   let foundFlag = false;
-  let availableFlag = true;
+  let availableFlag = false;
   // Search the lenders collection for the game.
-  for (let entry of req.collection){
-    if(req.gameid == entry.GAMEINDEX) {
+  for (let entry of collectionData){
+    if(req.gameID == entry.GAMEINDEX && req.lenderid == entry.USER ) {
       foundFlag = true;
       availableFlag = entry.ALLOWBORROW;
       break;
@@ -518,7 +534,8 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
     "BORROWER": req.borrowerid,
     "ITEM": req.gameID,
     "ID": newRequestID,
-    "STATUS": "pending"
+    "STATUS": "pending",
+    "GAME_NAME": req.gameName
   }
   // Add the new request
   requestsData.push(newEntry);

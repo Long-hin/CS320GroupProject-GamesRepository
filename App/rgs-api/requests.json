@@ -11,7 +11,7 @@
     "BORROWER": "Joe@test.com",
     "ITEM": "10015",
     "ID": "7",
-    "STATUS": "accepted",
+    "STATUS": "approved",
     "GAME_NAME": "Super Mario Bros."
   },
   {
@@ -37,5 +37,13 @@
     "ID": 10,
     "STATUS": "pending",
     "GAME_NAME": "Major League Baseball"
+  },
+  {
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
+    "ITEM": "10045",
+    "ID": 11,
+    "STATUS": "pending",
+    "GAME_NAME": "Castlevania"
   }
 ]
