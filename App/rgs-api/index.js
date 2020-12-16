@@ -350,25 +350,26 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
     // Remove Other requests for the same item from the same user
     let toRemove = [];
     let index = 0;
-    console.log(gameID);
-    console.log(lender);
     // Find the indexes of requests for the same item from the same lender
     for (let entry of requestsData) {
       if (entry.ITEM == gameID && entry.LENDER == lender) {
         if (index == req.index) {
-          console.log("skip");
         }
         else {
           toRemove.push(index);
-          console.log("found");
         }
       }
       index ++;
     }
-    console.log("done");
     console.log(toRemove);
-    // Now delete at those indexes.
+    // Update the status of the original
     requestsData[req.index].STATUS = req.newStatus;
+    // Now delete at those indexes
+    let amountRemoved = 0;
+    for (let entry of toRemove){
+      requestsData.splice(entry - amountRemoved,1);
+      amountRemoved ++;
+    }
   }
   else if (req.newStatus == "returned"){
     // Flip the flag in the collections

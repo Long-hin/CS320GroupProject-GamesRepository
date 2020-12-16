@@ -45,5 +45,13 @@
     "ID": 11,
     "STATUS": "pending",
     "GAME_NAME": "Castlevania"
+  },
+  {
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Joe@test.com",
+    "ITEM": "10015",
+    "ID": "12",
+    "STATUS": "pending",
+    "GAME_NAME": "Super Mario Bros."
   }
 ]
