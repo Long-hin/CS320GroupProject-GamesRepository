@@ -332,21 +332,54 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
   }
   else if (req.newStatus == "approved"){
     // Flip the flag in the collections
-    // requestsData[req.index]
+    let gameID = requestsData[req.index].ITEM;
+    let lender = requestsData[req.index].LENDER;
+    for (let entry of collectionData){
+      if(entry.USER == lender && entry.GAMEINDEX == gameID){
+        entry.ALLOWBORROW = !entry.ALLOWBORROW;
+        break;
+      }
+    }
     // Remove Other requests for the same item from the same user
+    let index = 0;
+    for(let entry of requestsData){
+      if (index == req.index){
+        // Don't delete that dummy
+        console.log("");
+      }
+      else if(entry.LENDER == lender && entry.ITEM == gameID){
+        requestsData.splice(index,1);
+        index--;
+      }
+    }
+    requestsData[req.index].STATUS = req.newStatus;
   }
   else if (req.newStatus == "returned"){
     // Flip the flag in the collections
+      let gameID = requestsData[req.index].ITEM;
+      let lender = requestsData[req.index].LENDER;
+      for (let entry of collectionData){
+        if(entry.USER == lender && entry.GAMEINDEX == gameID){
+          entry.ALLOWBORROW = !entry.ALLOWBORROW;
+          break;
+        }
+      }
     // Delete the request
-
+    requestsData.splice(req.index,1);
     }
   else {
     // Modify the requests STATUS field
     requestsData[req.index].STATUS = req.newStatus;
   }
 
-  // Write to the file.
+  // Write to the requests.
   fs.writeFile('./requests.json', JSON.stringify(requestsData, null, 2), function writeJSON(err) {
+    // Check to see if error was thown
+    if (err) return console.log(err);
+    console.log("success");
+  })
+  // Write to the collections file
+  fs.writeFile('./collections.json', JSON.stringify(collectionData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
     if (err) return console.log(err);
     console.log("success");
@@ -441,13 +474,15 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
 // ************************* START OF POSTS *************************
 
 // Find out how the request will work. Possibly check if item is in user collection
-// Maybe add gameid in the route?
+// Make new request
 app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   let foundFlag = false;
+  let availableFlag = true;
   // Search the lenders collection for the game.
   for (let entry of req.collection){
     if(req.gameid == entry.GAMEINDEX) {
       foundFlag = true;
+      availableFlag = entry.ALLOWBORROW;
       break;
     }
   }
@@ -455,6 +490,12 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   if(!foundFlag){
     res.status(404).send("404:Not found");
     console.log("404:Not found");
+    return;
+  }
+  // If the game isn't available, send an error and return.
+  if(!availableFlag){
+    res.status(409).send("409:Item not available");
+    console.log("409:Item not available");
     return;
   }
   // Super innefficient way of assigning unique IDs to request.

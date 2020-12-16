@@ -1,65 +1,41 @@
 [
   {
-    "LENDER": "Hank@test.com",
-    "BORROWER": "Joe@test.com",
-    "ITEM": "10007",
-    "ID": "2",
-    "STATUS": "pending"
-  },
-  {
-    "LENDER": "Joe@test.com",
-    "BORROWER": "Hank@test.com",
-    "ITEM": "20005",
-    "ID": "3",
-    "STATUS": "accepted"
-  },
-  {
     "LENDER": "Bob@test.com",
     "BORROWER": "Joe@test.com",
-    "ITEM": "30005",
-    "ID": "4",
-    "STATUS": "accepted"
-  },
-  {
-    "LENDER": "Hank@test.com",
-    "BORROWER": "Bob@test.com",
-    "ITEM": "10105",
-    "ID": "5",
-    "STATUS": "accepted"
-  },
-  {
-    "LENDER": "Bob@test.com",
-    "BORROWER": "Joe@test.com",
-    "ITEM": "20008",
+    "ITEM": "60348",
     "ID": "6",
     "STATUS": "accepted"
   },
   {
     "LENDER": "Hank@test.com",
     "BORROWER": "Joe@test.com",
-    "ITEM": "70005",
+    "ITEM": "10015",
     "ID": "7",
-    "STATUS": "accepted"
-  },
-  {
-    "LENDER": "Hank@test.com",
-    "BORROWER": "Bob@test.com",
-    "ITEM": "40005",
-    "ID": "8",
-    "STATUS": "accepted"
-  },
-  {
-    "LENDER": "Hank@test.com",
-    "BORROWER": "Bob@test.com",
-    "ITEM": "60005",
-    "ID": "9",
-    "STATUS": "pending"
+    "STATUS": "accepted",
+    "GAME_NAME": "Super Mario Bros."
   },
   {
     "LENDER": "Hank@test.com",
     "BORROWER": "Bob@test.com",
     "ITEM": "10015",
+    "ID": "8",
+    "STATUS": "approved",
+    "GAME_NAME": "Super Mario Bros."
+  },
+  {
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
+    "ITEM": "10136",
+    "ID": "9",
+    "STATUS": "pending",
+    "GAME_NAME": "Blaster Master"
+  },
+  {
+    "LENDER": "Hank@test.com",
+    "BORROWER": "Bob@test.com",
+    "ITEM": "50003",
     "ID": 10,
-    "STATUS": "pending"
+    "STATUS": "pending",
+    "GAME_NAME": "Major League Baseball"
   }
 ]
