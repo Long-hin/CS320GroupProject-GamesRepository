@@ -320,16 +320,26 @@ app.put('/user/:userid/collection/:gameid', (req, res, next) => {
 // possible statuses: pending, approved, returned, denied.
 app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
   // If the request doesn't exist, send an error and return.
-  if(!req.exists){
+  if (!req.exists){
     res.status(404).send("404:Not found");
     console.log("404:Not found");
     return;
   }
 
   // Delete the request if the STATUS is now denied.
-  if(req.newStatus == "denied"){
+  if (req.newStatus == "denied"){
     requestsData.splice(req.index,1);
   }
+  else if (req.newStatus == "approved"){
+    // Flip the flag in the collections
+    // requestsData[req.index]
+    // Remove Other requests for the same item from the same user
+  }
+  else if (req.newStatus == "returned"){
+    // Flip the flag in the collections
+    // Delete the request
+
+    }
   else {
     // Modify the requests STATUS field
     requestsData[req.index].STATUS = req.newStatus;
@@ -382,7 +392,14 @@ app.put('/user/:userid', (req, res, next) => {
     if (err) return console.log(err);
     console.log("success");
   })
-  res.status(200).send("success");
+
+  res.status(200).json({
+    token: 'success',
+    user: {
+      id: userData[req.userIndex].userID,
+      name: `${userData[req.userIndex].firstName} ${userData[req.userIndex].lastName}`
+    }
+  })
 })
 // ************************* END OF GETS *************************
 
