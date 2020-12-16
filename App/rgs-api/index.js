@@ -319,8 +319,17 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
     console.log("404:Not found");
     return;
   }
-  // Modify the requests STATUS field
-  requestsData[req.index].STATUS = req.newStatus;
+
+  // Delete the request if the STATUS is now denied.
+  if(req.newStatus == "denied"){
+    requestsData.splice(req.index,1);
+  }
+  else {
+    // Modify the requests STATUS field
+    requestsData[req.index].STATUS = req.newStatus;
+  }
+
+
 
   // Write to the file.
   fs.writeFile('./requests.json', JSON.stringify(requestsData, null, 2), function writeJSON(err) {
@@ -395,7 +404,6 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
     console.log("404:Not found");
     return;
   }
-  // if index is the size of the collectionData array, it should mean not found. Add error throw later for that.
   // Now remove the item from the array.
   collectionData.splice(index,1);
   // Rewrite collections.json
