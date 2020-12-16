@@ -3,6 +3,7 @@ const app = express()
 const port = 5000
 const fs = require('fs');
 
+var bodyParser = require('body-parser');
 var gameDatabase = require('./Catalog_with_index.json')
 var collectionData = require('./collections.json')
 var userData = require('./users.json')
@@ -13,6 +14,10 @@ function createError(status, message) {
 	err.status = status;
 	return err;
 }
+
+app.use(bodyParser.json());
+
+// ************************* START OF PARAMETERS *************************
 
 // Paramaters for when index is called. Gets an array index for the database for the associated game.
 app.param('index', function(req, res, next, id){
@@ -44,26 +49,75 @@ app.param('reqid', function (req, res, next, id) {
     if(req.requestID == entry.ID){
       req.request = entry;
       req.exists = true;
-      req.index = 0;
+      req.index = index;
       break;
     }
     index++;
   }
   next();
 })
-// ************************* START OF PARAMETERS *************************
+
 // Parameters for when userid is called. userID is the users unique ID. collection is an array containing all the
 // game IDs in their collection. requests contains all the request objects they are either a lender or a borrower in.
 // Collection is an array where each entry is the ID for the owned game.
 app.param('userid', function(req, res, next, id){
+  // This one is all the info
+  req.userCollection = [];
+  // This one is just ID for existance checks
   req.collection = [];
   req.requests = [];
   req.userID = id;
+  req.userExists = false;
+  userIndex = 0;
+  for(let entry of userData){
+    if(entry.userID == id){
+      req.userInfo = {
+        "userID":entry.userID,
+        "email":entry.email,
+        "firstName":entry.firstName,
+        "lastName":entry.lastName,
+        "address":entry.address,
+        "city":entry.city,
+        "state":entry.state,
+        "zipcode":entry.zipcode,
+        "contry":entry.country
+      }
+      req.userExists = true;
+      req.userIndex = userIndex;
+      break;
+    }
+    userIndex++;
+  }
   // Iterate across the collectionData, when a collection entry is tagged with a user, add the associated ID to an
   // array containing all the gameIDs in their collection.
   for (let entry of collectionData){
     if(entry.USER == id){
+      // Get information about the game from the gameDatabase by ID
+      for(let game of gameDatabase){
+        if(game.INDEX == entry.GAMEINDEX){
+          name = game.TITLE;
+          platform = game.CONSOLE;
+          break;
+        }
+      }
+      // Get information about the user from the userData by ID
+      for(let user of userData){
+        if(user.userID == entry.USER){
+          owner = user.firstName.concat(" ");
+          owner = owner.concat(user.lastName);
+        }
+      }
+      // Construct the new entry
+      let newEntry = {
+        "id":entry.GAMEINDEX,
+        "name":name,
+        "platform":platform,
+        "owner":owner,
+        "userID":entry.USER
+      }
+      // add the entry to the collection.
       req.collection.push(entry.GAMEINDEX);
+      req.userCollection.push(newEntry);
     }
   }
   // Iterate across the requestsData, grab all of the requests related to the user and build an array.
@@ -130,18 +184,64 @@ app.get('/game/:index', (req, res, next) => {
 // This shouldn't be a problem however for getting games in collection searches the file for collection items related
 // to the userID.
 app.get('/user/:userid/collection', (req, res, next)  => {
-  // add check if user exists
+  // check if user exists
+  if(!req.userExists){
+    res.send("404:User not found");
+    return;
+  }
   res.send(req.collection);
 })
 
-// Sends the entire collection data basically raw
+// Sends the entire collection data in the format specified below
 app.get('/catalog', (req, res, next) => {
-  res.send(collectionData);
+  // Transform the data before sending to the following json format:
+  /*
+  "id": ,
+  "name": ,
+  "platform": ,
+  "owner": ,
+  "userID": ,
+ */
+  let collections = [];
+  // Iterate across the collections database
+  for(let entry of collectionData){
+    // For each entry, find the game in the game database and fetch some information
+    for(let game of gameDatabase){
+      if(game.INDEX == entry.GAMEINDEX){
+        name = game.TITLE;
+        platform = game.CONSOLE;
+        break;
+      }
+    }
+    // For each entry, find the user in the user database and fetch some information
+    for(let user of userData){
+      if(user.userID == entry.USER){
+        owner = user.firstName.concat(" ");
+        owner = owner.concat(user.lastName);
+      }
+    }
+    // Construct the new entry
+    let newEntry = {
+      "id":entry.GAMEINDEX,
+      "name":name,
+      "platform":platform,
+      "owner":owner,
+      "userID":entry.USER
+    }
+    // Push it onto the data being sent
+    collections.push(newEntry);
+  }
+  // Send the constructed collection
+  res.send(collections);
 })
 
-// haven't looked at implementing this yet
-app.get('/user', (req, res) => {
-	res.send(userData)
+// Sends a users information from the database.
+app.get('/user/:userid', (req, res, next) => {
+  if(!req.userExists){
+    res.send("404:User not found");
+    return;
+  }
+  res.send(req.userInfo);
 })
 
 // Get all the requests associated with a user ID (returns a list of objects)
@@ -159,6 +259,21 @@ app.get('/user/:userid/request/:reqid',(req, res, next) => {
     return;
   }
   res.send(req.request);
+})
+
+// Send login request with email and password
+app.get('/user',(req, res, next) => {
+  let loginData = req.body[0];
+  for(let entry of userData){
+    if(entry.email == loginData.email){
+      if(entry.password == loginData.password){
+        res.send("success");
+        console.log("success");
+        return;
+      }
+    }
+  }
+  res.send("401:Email and password combination not found");
 })
 
 // ************************* END OF GETS *************************
@@ -190,10 +305,10 @@ app.put('/user/:userid/collection/:gameid', (req, res, next) => {
   fs.writeFile('./collections.json', JSON.stringify(collectionData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
     if (err) return console.log(err);
-    console.log("Write Success");
+    console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("Success");
+  res.send("success");
 })
 
 // Find out how the status update will be sent. Maybe delete the request upon return or denial?
@@ -212,12 +327,51 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
   fs.writeFile('./requests.json', JSON.stringify(requestsData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
     if (err) return console.log(err);
-    console.log("Write Success");
+    console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("Success");
+  res.send("success");
 })
 
+// Update user's information in database
+app.put('/user/:userid', (req, res, next) => {
+  // Check if user exists
+  if(!req.userExists){
+    res.send("404:User not found");
+    return;
+  }
+  // Get information from request
+  let newData = req.body[0];
+  // if the fields are empty skip updating the entry
+  if (newData.firstName != ""){
+    userData[req.userIndex].firstName = newData.firstName;
+  }
+  if (newData.lastName != ""){
+    userData[req.userIndex].lastName = newData.lastName;
+  }
+  if (newData.address != ""){
+    userData[req.userIndex].address = newData.address;
+  }
+  if (newData.city != ""){
+    userData[req.userIndex].city = newData.city;
+  }
+  if (newData.state != ""){
+    userData[req.userIndex].state = newData.state;
+  }
+  if (newData.zipcode != ""){
+    userData[req.userIndex].zipcode = newData.zipcode;
+  }
+  if (newData.country != ""){
+    userData[req.userIndex].country = newData.country;
+  }
+  // Write to the file.
+  fs.writeFile('./users.json', JSON.stringify(userData, null, 2), function writeJSON(err) {
+    // Check to see if error was thown
+    if (err) return console.log(err);
+    console.log("success");
+  })
+  res.send("success");
+})
 // ************************* END OF GETS *************************
 
 // ************************* START OF DELETES *************************
@@ -249,9 +403,9 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
   fs.writeFile('./collections.json', JSON.stringify(collectionData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
     if (err) return console.log(err);
-    console.log("Write Success");
+    console.log("success");
   })
-  res.send("Success");
+  res.send("success");
 })
 
 // ************************* END OF DELETES *************************
@@ -303,10 +457,41 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   fs.writeFile('./requests.json', JSON.stringify(requestsData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
     if (err) return console.log(err);
-    console.log("Write Success");
+    console.log("success");
   })
   // Just sent a message for testing purposes
-  res.send("Success");
+  res.send("success");
+})
+
+app.post('/user', (req,res,next) => {
+  // Check if email is already registered?
+  // Generate a unique User ID?
+  // Get the data from the body
+  let newData = req.body[0];
+  // Construct the new user entry
+  let newEntry = {
+    "userID": newData.firstName,
+    "firstName": newData.firstName,
+    "lastName": newData.lastName,
+    "email": newData.email,
+    "password": newData.password,
+    "address": newData.address,
+    "city": newData.city,
+    "state": newData.state,
+    "zipcode": newData.zipcode,
+    "country": newData.country
+  }
+  // Push the data onto the userData
+  userData.push(newEntry);
+
+  // Write to the file.
+  fs.writeFile('./users.json', JSON.stringify(userData, null, 2), function writeJSON(err) {
+    // Check to see if error was thown
+    if (err) return console.log(err);
+    console.log("success");
+  })
+  // Just sent a message for testing purposes
+  res.send("success");
 })
 
 // ************************* END OF POSTS *************************

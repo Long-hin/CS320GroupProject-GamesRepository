@@ -1,18 +1,49 @@
 [
- {
-   "USER":"Hank",
-   "HASCOLLECTION":"true"
- },
- {
-   "USER":"Dean",
-   "HASCOLLECTION":"true"
- },
- {
-   "USER":"Yuuko",
-   "HASCOLLECTION":"true"
- },
- {
-   "USER":"Charlie",
-   "HASCOLLECTION":"false"
- }
+  {
+    "userID": "Hank",
+    "email": "Hank@test.com",
+    "password": "passwordhank",
+    "firstName": "Hank",
+    "lastName": "Rank",
+    "address": "1234 Hank st.",
+    "city": "Vancouver",
+    "state": "Washington",
+    "zipcode": "11115",
+    "country": "US"
+  },
+  {
+    "userID": "Bob",
+    "email": "Bob@test.com",
+    "password": "passwordbob",
+    "firstName": "Bob",
+    "lastName": "Jones",
+    "address": "1111 Bob St.",
+    "city": "Vancouver",
+    "state": "Washington",
+    "zipcode": "11112",
+    "country": "US"
+  },
+  {
+    "userID": "Joe",
+    "email": "Hank@test.com",
+    "password": "true",
+    "firstName": "Joe",
+    "lastName": "Smith",
+    "address": "1111 Joe St.",
+    "city": "Vancouver",
+    "state": "Washington",
+    "zipcode": "11311",
+    "country": "US"
+  },
+  {
+    "userID": "Greg",
+    "firstName": "Greg",
+    "lastName": "Mcguy",
+    "email": "greg@test.com",
+    "password": "passwordgreg",
+    "address": "1234 Greg St.",
+    "city": "Salem",
+    "zipcode": "22234",
+    "country": "US"
+  }
 ]
