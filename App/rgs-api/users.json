@@ -1,6 +1,6 @@
 [
   {
-    "userID": "Hank",
+    "userID": "Hank@test.com",
     "email": "Hank@test.com",
     "password": "passwordhank",
     "firstName": "Hank",
@@ -12,7 +12,7 @@
     "country": "US"
   },
   {
-    "userID": "Bob",
+    "userID": "Bob@test.com",
     "email": "Bob@test.com",
     "password": "passwordbob",
     "firstName": "Bob",
@@ -24,7 +24,7 @@
     "country": "US"
   },
   {
-    "userID": "Joe",
+    "userID": "Hank@test.com",
     "email": "Hank@test.com",
     "password": "true",
     "firstName": "Joe",
@@ -36,7 +36,7 @@
     "country": "US"
   },
   {
-    "userID": "Greg",
+    "userID": "greg@test.com",
     "firstName": "Greg",
     "lastName": "Mcguy",
     "email": "greg@test.com",
@@ -45,5 +45,17 @@
     "city": "Salem",
     "zipcode": "22234",
     "country": "US"
+  },
+  {
+    "userID": "daniel@test.email",
+    "firstName": "Daniel",
+    "lastName": "Lee",
+    "email": "daniel@test.email",
+    "password": "testtest",
+    "address": "1234 Test St",
+    "city": "Camas",
+    "state": "Washington",
+    "zipcode": "12345",
+    "country": "United States"
   }
 ]

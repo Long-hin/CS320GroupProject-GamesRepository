@@ -1,7 +1,8 @@
 const express = require('express')
-const app = express()
+const appl = express()
 const port = 5000
 const fs = require('fs');
+const app = express.Router()
 
 var bodyParser = require('body-parser');
 var gameDatabase = require('./Catalog_with_index.json')
@@ -166,17 +167,25 @@ app.param('statusUpdate', function (req, res, next, id) {
 
 // Get all games in database
 app.get('/game', (req, res) => {
-	res.send(gameDatabase)
+	res.status(200).json(gameDatabase)
 })
 
 // Get game by index.
 app.get('/game/:index', (req, res, next) => {
   // If it doesn't exist, send an error and return
   if(!req.exists){
-    res.send("404:Not found");
+    res.status(404).send("Not found");
     return;
   }
-	res.send(gameDatabase[req.gameIndex]);
+	game = gameDatabase[req.gameIndex]
+	res.status(200).json({
+		name: game.TITLE,
+		platform: game.CONSOLE,
+		developer: game.DEVELOPER,
+		genre: game.GENRE,
+		url: game.URL,
+		release: game.RELEASE_DATE
+	});
 })
 
 // Get associated user collection.
@@ -232,7 +241,7 @@ app.get('/catalog', (req, res, next) => {
     collections.push(newEntry);
   }
   // Send the constructed collection
-  res.send(collections);
+  res.status(200).json(collections);
 })
 
 // Sends a users information from the database.
@@ -261,20 +270,6 @@ app.get('/user/:userid/request/:reqid',(req, res, next) => {
   res.send(req.request);
 })
 
-// Send login request with email and password
-app.get('/user',(req, res, next) => {
-  let loginData = req.body[0];
-  for(let entry of userData){
-    if(entry.email == loginData.email){
-      if(entry.password == loginData.password){
-        res.send("success");
-        console.log("success");
-        return;
-      }
-    }
-  }
-  res.send("401:Email and password combination not found");
-})
 
 // ************************* END OF GETS *************************
 
@@ -400,7 +395,7 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
   }
   // If the entry wasn't found, send an error and return.
   if(!foundFlag){
-    res.send("404:Not found");
+    res.status(404).send("Not found");
     console.log("404:Not found");
     return;
   }
@@ -412,7 +407,7 @@ app.delete('/user/:userid/collection/:gameid', (req, res, next) => {
     if (err) return console.log(err);
     console.log("success");
   })
-  res.send("success");
+  res.status(200).send("success");
 })
 
 // ************************* END OF DELETES *************************
@@ -472,11 +467,12 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
 
 app.post('/user', (req,res,next) => {
   // get the data from the body of the request
-  let newData = req.body[0];
+  console.log(req.body)
+  let newData = req.body.formData;
   // Check if the email is already registered
   for(let user of userData){
     if(user.email == newData.email){
-      res.send("409:Account already registered with this email");
+      res.status(409).send("Account already registered with this email");
       console.log("409:Account already registered with this email");
       return;
     }
@@ -505,11 +501,41 @@ app.post('/user', (req,res,next) => {
     console.log("success");
   })
   // Just sent a message for testing purposes
+  res.status(200).json({
+    token: 'success',
+    user: {
+	id: newEntry.userID,
+	name: `${newEntry.firstName} ${newEntry.lastName}`
+    }
+  })
   res.send("success");
+})
+
+// Send login request with email and password
+app.post('/user/signin',(req, res, next) => {
+  let loginData = req.body.formData;
+  for(let entry of userData){
+    if(entry.email == loginData.email){
+      if(entry.password == loginData.password){
+        res.status(200).json({
+			token: 'success',
+			user: {
+				id: entry.userID,
+				name: `${entry.firstName} ${entry.lastName}`
+			}
+		})
+        console.log("Logged in user", entry.email);
+        return;
+      }
+    }
+  }
+  res.status(401).send("Email and password combination not found");
 })
 
 // ************************* END OF POSTS *************************
 
-app.listen(port, () => {
+appl.use('/api', app);
+
+appl.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
