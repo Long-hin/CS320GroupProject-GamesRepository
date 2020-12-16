@@ -114,7 +114,8 @@ app.param('userid', function(req, res, next, id){
         "name":name,
         "platform":platform,
         "owner":owner,
-        "userID":entry.USER
+        "userID":entry.USER,
+        "allowBorrow":entry.ALLOWBORROW
       }
       // add the entry to the collection.
       req.collection.push(entry.GAMEINDEX);
@@ -352,7 +353,7 @@ app.put('/user/:userid', (req, res, next) => {
     return;
   }
   // Get information from request
-  let newData = req.body[0];
+  let newData = req.body;
   // if the fields are empty skip updating the entry
   if (newData.firstName != ""){
     userData[req.userIndex].firstName = newData.firstName;
