@@ -62,14 +62,16 @@ app.param('reqid', function (req, res, next, id) {
 // game IDs in their collection. requests contains all the request objects they are either a lender or a borrower in.
 // Collection is an array where each entry is the ID for the owned game.
 app.param('userid', function(req, res, next, id){
-  // This one is all the info
+  // This one is all the info on collections
   req.userCollection = [];
   // This one is just ID for existance checks
   req.collection = [];
+  // This one is all the requests associated with the user
   req.requests = [];
   req.userID = id;
   req.userExists = false;
   userIndex = 0;
+  // Itterate accross the userData file, finding the user with the given userid and saving their info.
   for(let entry of userData){
     if(entry.userID == id){
       req.userInfo = {
@@ -154,6 +156,7 @@ app.param('gameid', function (req, res, next, id) {
 
 // Parameters for when gameid is called. gameID is the id of the related game.
 app.param('borrowerid', function (req, res, next, id) {
+  // Save the borrowers id for later use
   req.borrowerid = id;
   next();
 })
@@ -208,7 +211,7 @@ app.get('/game/:index', (req, res, next) => {
 // Get associated user collection.
 // Note: the added item is just added to the end of the collections.json rather than in order, so it won't be sorted.
 // This shouldn't be a problem however for getting games in collection searches the file for collection items related
-// to the userID.
+// to the userID. Note2: Seaching is done on the front end.
 app.get('/user/:userid/collection', (req, res, next)  => {
   // check if user exists
   if(!req.userExists){
@@ -337,6 +340,7 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
   if (req.newStatus == "denied"){
     requestsData.splice(req.index,1);
   }
+  // If the new status is approved,
   else if (req.newStatus == "approved"){
     // Flip the flag in the collections
     let gameID = requestsData[req.index].ITEM;
@@ -371,6 +375,7 @@ app.put('/user/:userid/request/:reqid/:statusUpdate', (req, res, next) => {
       amountRemoved ++;
     }
   }
+  // If the newStatus is returned,
   else if (req.newStatus == "returned"){
     // Flip the flag in the collections
       let gameID = requestsData[req.index].ITEM;
@@ -412,6 +417,29 @@ app.put('/user/:userid', (req, res, next) => {
     res.status(404).send("404:User not found");
     return;
   }
+  // Check if the new fields are too long
+  if (newEntry.firstName.length > 30){
+    res.status(400).send("First name length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.lastName.length > 30){
+    res.status(400).send("First name length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.email.length > 30){
+    res.status(400).send("Email length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.address.length > 100){
+    res.status(400).send("Address length exceeded 100 characters");
+    return;
+  }
+  if (newEntry.city.length > 30){
+    res.status(400).send("Address length exceeded 30 characters");
+  }
+  if (newEntry.zipcode.length > 15){
+    res.status(400).send("Zipcode length exceeded 15 characters")
+  }
   // Get information from request
   let newData = req.body;
   // if the fields are empty skip updating the entry
@@ -436,6 +464,7 @@ app.put('/user/:userid', (req, res, next) => {
   if (newData.country != ""){
     userData[req.userIndex].country = newData.country;
   }
+
   // Write to the file.
   fs.writeFile('./users.json', JSON.stringify(userData, null, 2), function writeJSON(err) {
     // Check to see if error was thown
@@ -550,6 +579,7 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
   res.status(200).send("success");
 })
 
+// Create new user account.
 app.post('/user', (req,res,next) => {
   // get the data from the body of the request
   console.log(req.body)
@@ -575,6 +605,29 @@ app.post('/user', (req,res,next) => {
     "state": newData.state,
     "zipcode": newData.zipcode,
     "country": newData.country
+  }
+  // Check if the new fields are too long
+  if (newEntry.firstName.length > 30){
+    res.status(400).send("First name length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.lastName.length > 30){
+    res.status(400).send("First name length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.email.length > 30){
+    res.status(400).send("Email length exceeded 30 characters");
+    return;
+  }
+  if (newEntry.address.length > 100){
+    res.status(400).send("Address length exceeded 100 characters");
+    return;
+  }
+  if (newEntry.city.length > 30){
+    res.status(400).send("Address length exceeded 30 characters");
+  }
+  if (newEntry.zipcode.length > 15){
+    res.status(400).send("Zipcode length exceeded 15 characters")
   }
   // Push the data onto the userData
   userData.push(newEntry);
