@@ -141,7 +141,7 @@ const catalog = [
 },
 {
    "INDEX":10015,
-   "CONSOLE":"NES",
+  "CONSOLE":"NES",
    "TITLE":"Super Mario Bros.",
    "URL":"https://en.wikipedia.org/wiki/Super_Mario_Bros.",
    "DEVELOPER":"Nintendo",
@@ -49521,3 +49521,6 @@ const catalog = [
 }
 ];
 
+module.exports = Objects.freeze({
+	DATA: catalog
+})
