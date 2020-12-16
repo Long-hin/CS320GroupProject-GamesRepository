@@ -293,9 +293,8 @@ app.put('/user/:userid/collection/:gameid', (req, res, next) => {
   // Time to check if item is already in the collection
   for(let entry of req.collection){
     if(entry == req.gameID){
-      // ask what should be thrown here
-      res.send("item already in collection");
-      console.log("item already in collection");
+      res.send("409:Item already in collection");
+      console.log("409:Item already in collection");
       return;
     }
   }
@@ -437,8 +436,8 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
     }
     // Check if the request for the item already exists while were here
     if(entry.ITEM == req.gameID && entry.LENDER == req.lenderid && entry.BORROWER == req.borrowerid){
-      res.send("Error: already have request for that item");
-      console.log("Error: already have request for that item");
+      res.send("409:Already have request for that item");
+      console.log("409:Already have request for that item");
       return;
     }
   }
@@ -464,13 +463,20 @@ app.post('/user/:borrowerid/request/:lenderid/:gameid', (req, res, next) => {
 })
 
 app.post('/user', (req,res,next) => {
-  // Check if email is already registered?
-  // Generate a unique User ID?
-  // Get the data from the body
+  // get the data from the body of the request
   let newData = req.body[0];
+  // Check if the email is already registered
+  for(let user of userData){
+    if(user.email == newData.email){
+      res.send("409:Account already registered with this email");
+      console.log("409:Account already registered with this email");
+      return;
+    }
+  }
+  // Generate a unique User ID?
   // Construct the new user entry
   let newEntry = {
-    "userID": newData.firstName,
+    "userID": newData.email,
     "firstName": newData.firstName,
     "lastName": newData.lastName,
     "email": newData.email,
