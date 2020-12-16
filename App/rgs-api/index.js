@@ -428,10 +428,6 @@ app.put('/user/:userid', (req, res, next) => {
     res.status(400).send("Last name length exceeded 30 characters");
     return;
   }
-  if (newData.email.length > 30){
-    res.status(400).send("Email length exceeded 30 characters");
-    return;
-  }
   if (newData.address.length > 100){
     res.status(400).send("Address length exceeded 100 characters");
     return;
