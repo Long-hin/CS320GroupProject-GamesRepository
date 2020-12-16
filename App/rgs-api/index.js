@@ -126,6 +126,15 @@ app.param('userid', function(req, res, next, id){
     if(entry.LENDER == id || entry.BORROWER == id)
       req.requests.push(entry);
   }
+  // Now add a field in the requests array for the game name.
+  for (let request of req.requests){
+    for (let game of gameDatabase){
+      if(game.INDEX == request.ITEM){
+        request.GAME_NAME = game.TITLE;
+        break;
+      }
+    }
+  }
   next();
 })
 
@@ -260,6 +269,7 @@ app.get('/user/:userid/request',(req, res, next) => {
   res.status(200).json(req.requests)
 })
 
+/* Old Unused route
 // Get an object representation of just the request with the requested ID
 app.get('/user/:userid/request/:reqid',(req, res, next) => {
   // if the request doesn't exist, send an error and return.
@@ -270,8 +280,7 @@ app.get('/user/:userid/request/:reqid',(req, res, next) => {
   }
   res.status(200).json(req.request);
 })
-
-
+*/
 // ************************* END OF GETS *************************
 
 // ************************* START OF PUTS *************************
